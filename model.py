@@ -28,7 +28,7 @@ class User(db.Model):
 
         return f"<User user_id={self.user_id} email={self.email}>"
 
-
+user = User(user_id=user_id)
 # Put your Movie and Rating model classes here.
 
 class Movie(db.Model):
@@ -41,6 +41,14 @@ class Movie(db.Model):
     released_at = db.Column(db.DateTime, nullable=False)
     imdb_url = db.Column(db.String(250), nullable=False)
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return f"""<Movie movie_id={self.movie_id}
+                    title={self.title}
+                    released_at={self.released_at}
+                    score={self.score}>"""
+
 class Rating(db.Model):
     """Ratings in ratings website."""
 
@@ -50,6 +58,14 @@ class Rating(db.Model):
     movie_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return f"""<Rating rating_id={self.rating_id} 
+                   movie_id={self.movie_id} 
+                   user_id={self.user_id} 
+                   score={self.score}>"""
 
 
 ##############################################################################
