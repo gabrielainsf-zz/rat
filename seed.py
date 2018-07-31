@@ -1,12 +1,13 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import User
+from model import User, Movie, Rating
 # from model import Rating
 # from model import Movie
 
 from model import connect_to_db, db
 from server import app
+from datetime import time
 
 
 def load_users():
@@ -36,6 +37,39 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+
+    print("Movies")
+
+    Movie.query.delete()
+
+    for row in open("seed_data/u.item"):
+        row = row.rstrip()
+
+        row_list = row.split("|")
+        movie_id = row_list[0]
+        movie_title_with_year = row_list[1]
+        release_date = row_list[2]
+        # URL to datetime docs https://docs.python.org/3.4/library/time.html#time.strptime
+        imdb_url = row_list[4]
+
+        movie_title_split = movie_title_with_year.split(" ")
+        year_removed = movie_title_split.pop()
+        movie_title = ' '
+        movie_title = movie_title.join(movie_title_split)
+
+        
+        print(movie_title)
+
+        movie = Movie(movie_id=movie_id,
+                      title=movie_title,
+                      released_at=release_date,
+                      imdb_url=imdb_url)
+
+        db.session.add(movie)
+
+    db.session.commit()
+
+
 
 
 def load_ratings():
