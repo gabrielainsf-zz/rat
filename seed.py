@@ -7,7 +7,7 @@ from model import User, Movie, Rating
 
 from model import connect_to_db, db
 from server import app
-from datetime import time
+from datetime import datetime
 
 
 def load_users():
@@ -46,19 +46,23 @@ def load_movies():
         row = row.rstrip()
 
         row_list = row.split("|")
-        movie_id = row_list[0]
+        movie_id = int(row_list[0])
         movie_title_with_year = row_list[1]
-        release_date = row_list[2]
-        # URL to datetime docs https://docs.python.org/3.4/library/time.html#time.strptime
+        release_date_str = row_list[2]
+
+        # Turn release date to datetime obj
+        if release_date_str:
+            release_date = datetime.strptime(release_date_str, "%d-%b-%Y")
+            # print(release_date)
+        else:
+            release_date = None
+        
         imdb_url = row_list[4]
 
+        # Remove release year from title
         movie_title_split = movie_title_with_year.split(" ")
         year_removed = movie_title_split.pop()
-        movie_title = ' '
-        movie_title = movie_title.join(movie_title_split)
-
-        
-        print(movie_title)
+        movie_title = ' '.join(movie_title_split)
 
         movie = Movie(movie_id=movie_id,
                       title=movie_title,
@@ -70,11 +74,29 @@ def load_movies():
     db.session.commit()
 
 
-
-
 def load_ratings():
     """Load ratings from u.data into database."""
 
+    print("Ratings")
+
+    Rating.query.delete()
+
+    for row in open("seed_data/u.data"):
+        row = row.rstrip()
+
+        row_list = row.split("\t")
+        # print(row_list)
+        user_id = row_list[0]
+        movie_id = row_list[1]
+        score = row_list[2]
+
+        rating = Rating(user_id=user_id,
+                        movie_id=movie_id,
+                        score=score)
+
+        db.session.add(rating)
+
+    db.session.commit()
 
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
@@ -96,7 +118,9 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_users()
-    load_movies()
-    load_ratings()
-    set_val_user_id()
+
+    # Commenting out so we don't continue to accidentally seed db
+    # load_users()
+    # load_movies()
+    # load_ratings()
+    # set_val_user_id()
