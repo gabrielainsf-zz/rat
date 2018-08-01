@@ -7,6 +7,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Rating, Movie
 
+from warnings import warn
+
 
 app = Flask(__name__)
 
@@ -31,6 +33,28 @@ def user_list():
     users_list = User.query.all()
     return render_template("users.html", users=users_list)
 
+@app.route('/register', methods=["GET"])
+def register_form():
+
+    return render_template("register_form.html")
+
+@app.route('/register', methods=["POST"])
+def register_process():
+    email = request.form['email']
+    password = request.form['password']
+
+    if (User.query.filter(User.email != email).all()):
+        new_user = User(email = email, password = password)
+        db.session.add(new_user)
+        db.session.commit()
+    elif (User.query.filter(User.email == email).all()):
+        print("Sorry! Can't do that.")
+
+        # Figure out js-like alert for python?
+        # Delete all of Megan's fake accounts
+        # Decide what to do if user is already in db
+    
+    return redirect('/')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
