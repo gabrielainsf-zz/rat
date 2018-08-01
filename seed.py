@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # Import different types of data
 
     # Commenting out so we don't continue to accidentally seed db
-    # load_users()
-    # load_movies()
-    # load_ratings()
-    # set_val_user_id()
+    load_users()
+    load_movies()
+    load_ratings()
+    set_val_user_id()

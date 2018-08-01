@@ -42,18 +42,22 @@ def register_form():
 def register_process():
     email = request.form['email']
     password = request.form['password']
+    # check_user equals a single object
+    # We are querying the database, and returning the first item that
+    # has the same email that we input, because if it is in the db,
+    # it will be the "first" one--if it's not in the db, will be None
+    check_user = User.query.filter(User.email == email).first()
 
-    if (User.query.filter(User.email != email).all()):
+    # If the check_user variable above is None (the email does not)
+    # exist in the db, then we want to add the new user
+    if check_user is None:
         new_user = User(email = email, password = password)
         db.session.add(new_user)
         db.session.commit()
-    elif (User.query.filter(User.email == email).all()):
+    else:
         print("Sorry! Can't do that.")
+        # Figure out js-like alert for python? Flash message?
 
-        # Figure out js-like alert for python?
-        # Delete all of Megan's fake accounts
-        # Decide what to do if user is already in db
-    
     return redirect('/')
 
 if __name__ == "__main__":
