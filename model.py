@@ -28,7 +28,6 @@ class User(db.Model):
 
         return f"<User user_id={self.user_id} email={self.email}>"
 
-user = User(user_id=user_id)
 # Put your Movie and Rating model classes here.
 
 class Movie(db.Model):
@@ -55,10 +54,14 @@ class Rating(db.Model):
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
+    user = db.relationship("User", backref=db.backref("ratings", order_by=rating_id))
+
+    movie = db.relationship("Movie", backref=db.backref("ratings", order_by=rating_id))
+    
     def __repr__(self):
         """Provide helpful representation when printed."""
 
