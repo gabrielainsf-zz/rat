@@ -4,13 +4,26 @@
 <h2>User Info:</h2>
 
   <ul>
-    {% for user in users %}
+ 
       <li>
           Age: {{ user.age }}<br>
-          Zipcode: {{ user.zipcode }}
-<!--           <! ---TODO: Call list of movies, relatational dbs?> -->
+          Zipcode: {{ user.zipcode }}<br>
       </li>
-    {% endfor %}
   </ul>
+
+  <br>
+  <h3>Movies Rated:</h3>
+
+	  {% for movie_rating in movie_list %}
+		
+		<ul>
+			<li>
+		Movie Title: {{ movie_rating.movie.title }} <br>
+	  	Score: {{ movie_rating.score }} <br>
+	  		</li>
+	  	</ul>
+
+
+	  {% endfor %}
 
 {% endblock %}

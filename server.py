@@ -33,6 +33,16 @@ def user_list():
     users_list = User.query.all()
     return render_template("users.html", users=users_list)
 
+@app.route('/users/<user_id>')
+def display_user_info(user_id):
+
+    #  Query user info with user_id
+    user_info = User.query.filter(User.user_id == user_id).first()
+    movie_ratings_by_user_id = Rating.query.filter(Rating.user_id == user_id).all()
+
+
+    return render_template('user_info.html', user=user_info, movie_list=movie_ratings_by_user_id)
+
 @app.route('/register', methods=["GET"])
 def register_form():
 
@@ -91,7 +101,7 @@ def login_process():
         # print('Yay! You are logged in.')
 
 
-    return redirect('/')
+    return redirect('/users/' + str(user_id))
 
 @app.route('/logout')
 def logout_process():
