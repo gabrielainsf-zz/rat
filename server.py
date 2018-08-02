@@ -60,6 +60,39 @@ def register_process():
 
     return redirect('/')
 
+@app.route('/login', methods=["GET"])
+def login_form():
+
+    return render_template("login_form.html")
+
+@app.route('/login', methods=["POST"])
+def login_process():
+
+    # Data from form
+    email = request.form['email']
+    print(email)
+    password = request.form['password']
+    print(password)
+    
+    # Data queried from db
+    user_in_db = User.query.filter(User.email == email).first()
+    print(user_in_db)
+    user_password = user_in_db.password
+    print(user_password)
+    user_id = user_in_db.user_id
+    print(user_id)
+
+    if user_in_db is None:
+        flash('Oops! You need to register first.')
+        print('Oops! You need to register first.')
+    elif email == user_in_db.email and password == user_in_db.password:
+        session['user_id'] = user_id
+        flash('Yay! You are logged in.')
+        print('Yay! You are logged in.')
+
+
+    return redirect('/')
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
