@@ -8,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, Rating, Movie
 
 from warnings import warn
+from sqlalchemy import asc
 
 
 app = Flask(__name__)
@@ -109,6 +110,14 @@ def logout_process():
     del session['user_id']
     flash('Thanks for logging out. Come back soon!')
     return redirect('/login')
+
+@app.route('/movies')
+def display_movies():
+
+    movies = Movie.query.order_by(asc(Movie.title)).all()
+
+
+    return render_template('movie_list.html', movies=movies)
 
 
 if __name__ == "__main__":
